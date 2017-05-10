@@ -4,7 +4,9 @@
  * Shim process.stdout.
  */
 
-process.stdout = require('browser-stdout')();
+process.stdout = require('browser-stdout')({
+  label: false
+});
 
 var Mocha = require('./lib/mocha');
 
@@ -1825,7 +1827,8 @@ var clearInterval = global.clearInterval;
  * Check if both stdio streams are associated with a tty.
  */
 
-var isatty = tty.isatty(1) && tty.isatty(2);
+// var isatty = tty.isatty(1) && tty.isatty(2);
+var isatty = false;
 
 /**
  * Enable coloring by default, except in the browser interface.
@@ -6557,9 +6560,10 @@ exports.stackTraceFilter = function() {
   // TODO: Replace with `process.browser`
   var slash = '/';
   var is = typeof document === 'undefined' ? { node: true } : { browser: true };
-  var cwd = is.node
-      ? process.cwd() + slash
-      : (typeof location === 'undefined' ? window.location : location).href.replace(/\/[^\/]*$/, '/');
+  // var cwd = is.node
+  //     ? process.cwd() + slash
+  //     : (typeof location === 'undefined' ? window.location : location).href.replace(/\/[^\/]*$/, '/');
+  var cwd = ''
 
   function isMochaInternal(line) {
     return (~line.indexOf('node_modules' + slash + 'mocha' + slash))
@@ -10274,7 +10278,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = setTimeout(cleanUpNextTick);
+    var timeout = setTimeout(cleanUpNextTick, 0);
     draining = true;
 
     var len = queue.length;
